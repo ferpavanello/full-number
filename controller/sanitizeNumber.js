@@ -8,42 +8,21 @@ function sanitizeNumber (rawNumber) {
     const arrNumbers = rawNumber.split('')
     const numbersLength = arrNumbers.length
     const treatment = selectTreatment(numbersLength)
-    return treatment(rawNumber, arrNumbers, numbersLength)
+    return treatment(arrNumbers, numbersLength)
 }
 
 function selectTreatment (numbersLength) {
     const treats = {
-        1: unityTreat,
-        2: tenTreat,
-        3: hundredTreat,
+        2: constructLabel,
+        3: constructLabel,
         4: thousandTreat
     }
 
     return treats[numbersLength]
 }
 
-function unityTreat (rawNumber) {
-    console.log('unity', NumbersEnum[rawNumber])
-    return NumbersEnum[rawNumber]
-}
-
-function tenTreat (rawNumber, arrNumbers, numbersLength) {
-    const sanitizedLabel = constructLabel(arrNumbers, numbersLength)
-    console.log('ten')
-
-    return sanitizedLabel
-}
-
-function hundredTreat (rawNumber, arrNumbers, numbersLength) {
-    const sanitizedLabel = constructLabel(arrNumbers, numbersLength)
-    console.log('hundred')
-    return sanitizedLabel
-}
-
-function thousandTreat (rawNumber, arrNumbers, numbersLength) {
-    const sanitizedLabel = constructLabel(arrNumbers, numbersLength)
-    console.log('thousandTreat')
-    return sanitizedLabel
+function thousandTreat (arrNumbers, numbersLength) {
+    return constructLabel(arrNumbers, numbersLength)
 }
 
 function constructLabel (arrNumbers, numbersLength) {
