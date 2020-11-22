@@ -8,26 +8,27 @@ function sanitizeNumber (rawNumber) {
     const arrNumbers = rawNumber.split('')
     const numbersLength = arrNumbers.length
     const treatment = selectTreatment(numbersLength)
-    return treatment(arrNumbers)
+    return treatment(arrNumbers,  numbersLength)
 }
 
 function selectTreatment (numbersLength) {
     const treats = {
         2: constructLabel,
         3: constructLabel,
-        4: thousandTreat,
-        5: tenThousandTreat
+        4: mountThousandLabel,
+        5: mountThousandLabel
     }
 
     return treats[numbersLength]
 }
 
-function thousandTreat (arrNumbers) {
-    const thousandLabel = treatThousandLabel(arrNumbers, 1)
-    arrNumbers.shift()
-    const useConnector = arrNumbers[0] !== '0'
+function mountThousandLabel (arrNumbers, numbersLength) {
+    const startHundred = numbersLength - 3
+    console.log('startHundred', arrNumbers.slice(startHundred))
+    const thousandLabel = treatThousandLabel(arrNumbers, startHundred)
+    const useConnector = arrNumbers[startHundred] !== '0'
     const connector = useConnector ? ' e ' : ' '
-    const hundredLabel = constructLabel(arrNumbers)
+    const hundredLabel = constructLabel(arrNumbers.slice(startHundred))
     const treatedLabel = `${thousandLabel}${connector}${hundredLabel}`
     return treatedLabel.trim()
 }
@@ -45,14 +46,6 @@ function treatThousandLabel (arrNumbers, thousandLength) {
     const tenThousandNumber = arrThousand.join().replace(/,/g, '')
     const tenThousandLabel = getThousandLabel(tenThousandNumber, arrThousand)
     return tenThousandNumber > 1 ? `${tenThousandLabel} mil` : 'mil'
-}
-
-function tenThousandTreat (arrNumbers) {
-    const thousandLabel = treatThousandLabel(arrNumbers, 2)
-    console.log('thousandLabel', thousandLabel)
-    const hundredLabel = constructLabel(arrNumbers.slice(2))
-    const treatedLabel = `${thousandLabel} ${hundredLabel}`
-    return treatedLabel.trim()
 }
 
 function constructLabel (arrNumbers) {
