@@ -8,24 +8,61 @@ function sanitizeNumber (rawNumber) {
     const arrNumbers = rawNumber.split('')
     const numbersLength = arrNumbers.length
     const treatment = selectTreatment(numbersLength)
-    return treatment(arrNumbers, numbersLength)
+    return treatment(arrNumbers)
 }
 
 function selectTreatment (numbersLength) {
     const treats = {
         2: constructLabel,
         3: constructLabel,
-        4: thousandTreat
+        4: thousandTreat,
+        5: tenThousandTreat
     }
 
     return treats[numbersLength]
 }
 
-function thousandTreat (arrNumbers, numbersLength) {
-    return constructLabel(arrNumbers, numbersLength)
+function thousandTreat (arrNumbers) {
+    const thousandLabel = treatThousandLabel(arrNumbers, 1)
+    arrNumbers.shift()
+    const useConnector = arrNumbers[0] !== '0'
+    const connector = useConnector ? ' e ' : ' '
+    const hundredLabel = constructLabel(arrNumbers)
+    const treatedLabel = `${thousandLabel}${connector}${hundredLabel}`
+    return treatedLabel.trim()
 }
 
-function constructLabel (arrNumbers, numbersLength) {
+function getThousandLabel (tenThousandNumber, arrThousand) {
+    const labelFromEnum = NumbersEnum[tenThousandNumber]
+    if (labelFromEnum) {
+        return labelFromEnum
+    }
+    return constructLabel(arrThousand)
+}
+
+function treatThousandLabel (arrNumbers, thousandLength) {
+    const arrThousand = arrNumbers.slice(0, thousandLength)
+    const tenThousandNumber = arrThousand.join().replace(/,/g, '')
+    const tenThousandLabel = getThousandLabel(tenThousandNumber, arrThousand)
+    return tenThousandNumber > 1 ? `${tenThousandLabel} mil` : 'mil'
+}
+
+function tenThousandTreat (arrNumbers) {
+    const thousandLabel = treatThousandLabel(arrNumbers, 2)
+    console.log('thousandLabel', thousandLabel)
+    const hundredLabel = constructLabel(arrNumbers.slice(2))
+    const treatedLabel = `${thousandLabel} ${hundredLabel}`
+    return treatedLabel.trim()
+}
+
+function constructLabel (arrNumbers) {
+    const isAllNumbersZero = arrNumbers.every(element => element === '0')
+    console.log('arrNumbers', arrNumbers)
+    if (isAllNumbersZero) {
+        return ''
+    }
+
+    const numbersLength = arrNumbers.length
     const arrLabels = arrNumbers.map((number, index) => {
         const elementPosition = index + 1
         const rangeFromLength = numbersLength - elementPosition
@@ -34,7 +71,8 @@ function constructLabel (arrNumbers, numbersLength) {
     })
 
     const fullLabel = arrLabels.join()
-    return fullLabel.replace(/,+/g, ' e ')
+    const formatedLabel = fullLabel.replace(/,+/g, ' e ')
+    return formatedLabel.trim()
 }
 
 module.exports = sanitizeNumber
