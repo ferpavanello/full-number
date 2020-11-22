@@ -1,14 +1,24 @@
 const NumbersEnum = require('./NumbersEnum')
 
 function sanitizeNumber (rawNumber) {
+    const operator = rawNumber.charAt(0) === '-' ? 'menos ' : ''
+    if (operator) {
+        rawNumber = rawNumber.slice(1)
+    }
+
     if (NumbersEnum[rawNumber]) {
-        return NumbersEnum[rawNumber]
+        return `${operator}${NumbersEnum[rawNumber]}`
+    }
+
+    if (rawNumber === '0') {
+        return 'zero'
     }
 
     const arrNumbers = rawNumber.split('')
     const numbersLength = arrNumbers.length
     const treatment = selectTreatment(numbersLength)
-    return treatment(arrNumbers,  numbersLength)
+    const fullNumber = treatment(arrNumbers,  numbersLength)
+    return `${operator}${fullNumber}`
 }
 
 function selectTreatment (numbersLength) {
