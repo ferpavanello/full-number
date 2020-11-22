@@ -1,5 +1,10 @@
 const NumbersEnum = require('./NumbersEnum')
 
+/**
+ * Sanitizes received param from API and returns full number label
+ * @param { String } rawNumber - Param from API
+ * @returns { String } full number label
+ */
 function sanitizeNumber (rawNumber) {
     const operator = rawNumber.charAt(0) === '-' ? 'menos ' : ''
     if (operator) {
@@ -21,6 +26,11 @@ function sanitizeNumber (rawNumber) {
     return `${operator}${fullNumber}`
 }
 
+/**
+ * Select treatment to use at API param
+ * @param { Number } numbersLength - Numbers array size
+ * @returns { Function } treatment
+ */
 function selectTreatment (numbersLength) {
     const treats = {
         2: constructLabel,
@@ -32,6 +42,12 @@ function selectTreatment (numbersLength) {
     return treats[numbersLength]
 }
 
+/**
+ * Mounts label when API param is about thousand and ten thounsand
+ * @param { String[] } arrNumbers - Array from API number
+ * @param { Number } numbersLength - Numbers array size
+ * @returns { String } full number label
+ */
 function mountThousandLabel (arrNumbers, numbersLength) {
     const startHundred = numbersLength - 3
     const thousandLabel = treatThousandLabel(arrNumbers, startHundred)
@@ -42,6 +58,12 @@ function mountThousandLabel (arrNumbers, numbersLength) {
     return treatedLabel.trim()
 }
 
+/**
+ * Gets thousand part from thousand number
+ * @param { String } tenThousandNumber - thousand part number
+ * @param { String[] } arrThousand - Array of thousand part 
+ * @returns { String } thousand part
+ */
 function getThousandLabel (tenThousandNumber, arrThousand) {
     const labelFromEnum = NumbersEnum[tenThousandNumber]
     if (labelFromEnum) {
@@ -50,6 +72,12 @@ function getThousandLabel (tenThousandNumber, arrThousand) {
     return constructLabel(arrThousand)
 }
 
+/**
+ * Formats thousand part label
+ * @param { String[] } arrNumbers - Array from API number
+ * @param { Number } thousandLength - Thousando numbers size
+ * @returns { String } thousand part label
+ */
 function treatThousandLabel (arrNumbers, thousandLength) {
     const arrThousand = arrNumbers.slice(0, thousandLength)
     const tenThousandNumber = arrThousand.join().replace(/,/g, '')
@@ -57,6 +85,11 @@ function treatThousandLabel (arrNumbers, thousandLength) {
     return tenThousandNumber > 1 ? `${tenThousandLabel} mil` : 'mil'
 }
 
+/**
+ * Constructs label from number array received
+ * @param { String[] } arrNumbers - Number array
+ * @returns { String } formated number label
+ */
 function constructLabel (arrNumbers) {
     const isAllNumbersZero = arrNumbers.every(element => element === '0')
     if (isAllNumbersZero) {
@@ -83,6 +116,14 @@ function constructLabel (arrNumbers) {
     return formatedLabel.trim()
 }
 
+/**
+ * Mounts number label treating specific cases of ten hundred number
+ * When number one is requested
+ * When ten number part is founded at enum
+ * @param { String[] } arrNumbers - Array from hundred number part
+ * @param { String } tenRawEnum hundred label from NumbersEnum
+ * @returns { String } formated number label
+ */
 function tenHundredSpecificTreats (arrNumbers, tenRawEnum) {
     const tenLabel = tenRawEnum ? tenRawEnum : constructLabel(arrNumbers.slice(1))
 
