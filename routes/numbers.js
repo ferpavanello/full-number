@@ -5,12 +5,12 @@ const sanitizeNumber = require('../controller/sanitizeNumber')
 router.get('/:rawNumber', (req, res) => {
     const rawNumber = req.params.rawNumber
     try {
-        const sanitizedNumber = sanitizeNumber(rawNumber)
-        return res.status(200).json({extenso: sanitizedNumber})
-    } catch {
         if (isNaN(rawNumber)) {
             return res.status(406).json({message: 'Invalid params, please put a number'})
         }
+        const sanitizedNumber = sanitizeNumber(rawNumber)
+        return res.status(200).json({extenso: sanitizedNumber})
+    } catch {
         return res.status(500).json({error: 'API couldn\'t parser the result'})
     }
 })
