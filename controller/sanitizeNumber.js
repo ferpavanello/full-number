@@ -24,7 +24,6 @@ function selectTreatment (numbersLength) {
 
 function mountThousandLabel (arrNumbers, numbersLength) {
     const startHundred = numbersLength - 3
-    console.log('startHundred', arrNumbers.slice(startHundred))
     const thousandLabel = treatThousandLabel(arrNumbers, startHundred)
     const useConnector = arrNumbers[startHundred] !== '0'
     const connector = useConnector ? ' e ' : ' '
@@ -50,12 +49,15 @@ function treatThousandLabel (arrNumbers, thousandLength) {
 
 function constructLabel (arrNumbers) {
     const isAllNumbersZero = arrNumbers.every(element => element === '0')
-    console.log('arrNumbers', arrNumbers)
     if (isAllNumbersZero) {
         return ''
     }
 
     const numbersLength = arrNumbers.length
+    if (numbersLength === 3 && (arrNumbers[1] === '1' || arrNumbers[0] === '1')) {
+        return oneTreatments(arrNumbers)
+    }
+
     const arrLabels = arrNumbers.map((number, index) => {
         const elementPosition = index + 1
         const rangeFromLength = numbersLength - elementPosition
@@ -65,6 +67,20 @@ function constructLabel (arrNumbers) {
 
     const fullLabel = arrLabels.join()
     const formatedLabel = fullLabel.replace(/,+/g, ' e ')
+    return formatedLabel.trim()
+}
+
+function oneTreatments (arrNumbers) {
+    const rawNumber = arrNumbers.join().replace(/,/g, '')
+    const tenNumber = rawNumber.slice(1)
+    const tenEnum = NumbersEnum[tenNumber]
+    const tenLabel = tenEnum ? tenEnum : constructLabel(arrNumbers.slice(1))
+
+    const hundredLabel = arrNumbers[0] !== '0' ? NumbersEnum[`${arrNumbers[0]}00`] : '' 
+    const hundredTreated = arrNumbers[0] === '1' ? 'cento' : hundredLabel
+
+    const fullLabel = `${hundredTreated} e ${tenLabel}`
+    const formatedLabel = fullLabel.replace(' e e', ' e')
     return formatedLabel.trim()
 }
 
