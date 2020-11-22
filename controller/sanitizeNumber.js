@@ -54,8 +54,11 @@ function constructLabel (arrNumbers) {
     }
 
     const numbersLength = arrNumbers.length
-    if (numbersLength === 3 && (arrNumbers[1] === '1' || arrNumbers[0] === '1')) {
-        return oneTreatments(arrNumbers)
+    const rawNumber = arrNumbers.join().replace(/,/g, '')
+    const tenRawNumber = rawNumber.slice(1)
+    const tenRawEnum = NumbersEnum[tenRawNumber]
+    if (numbersLength === 3 && (arrNumbers[0] === '1' || tenRawEnum)) {
+        return tenHundredSpecificTreats(arrNumbers, tenRawEnum)
     }
 
     const arrLabels = arrNumbers.map((number, index) => {
@@ -70,11 +73,8 @@ function constructLabel (arrNumbers) {
     return formatedLabel.trim()
 }
 
-function oneTreatments (arrNumbers) {
-    const rawNumber = arrNumbers.join().replace(/,/g, '')
-    const tenNumber = rawNumber.slice(1)
-    const tenEnum = NumbersEnum[tenNumber]
-    const tenLabel = tenEnum ? tenEnum : constructLabel(arrNumbers.slice(1))
+function tenHundredSpecificTreats (arrNumbers, tenRawEnum) {
+    const tenLabel = tenRawEnum ? tenRawEnum : constructLabel(arrNumbers.slice(1))
 
     const hundredLabel = arrNumbers[0] !== '0' ? NumbersEnum[`${arrNumbers[0]}00`] : '' 
     const hundredTreated = arrNumbers[0] === '1' ? 'cento' : hundredLabel
