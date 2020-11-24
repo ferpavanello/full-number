@@ -7,11 +7,7 @@ const NumbersEnum = require('./NumbersEnum')
  */
 function sanitizeNumber (rawNumber) {
     const operator = rawNumber.charAt(0) === '-' ? 'menos ' : ''
-    if (operator) {
-        rawNumber = rawNumber.slice(1)
-    }
-
-    rawNumber = formatRamNumber(rawNumber)
+    rawNumber = formatRawNumber(rawNumber)
 
     if (NumbersEnum[rawNumber]) {
         return `${operator}${NumbersEnum[rawNumber]}`
@@ -33,9 +29,9 @@ function sanitizeNumber (rawNumber) {
  * @param { String } rawNumber API number
  * @returns { String } formated number
  */
-function formatRamNumber (rawNumber) {
+function formatRawNumber (rawNumber) {
     const noSpaceNumber = rawNumber.trim()
-    const noPlusOperator = noSpaceNumber.replace(/\+/, '')
+    const noPlusOperator = noSpaceNumber.replace(/\+|\-/, '')
     const noUnecessaryZeros = removeUnnecessaryZeros(noPlusOperator)
     const noDotsZeros = noUnecessaryZeros.replace(/\.0+/g, '')
     return noDotsZeros
