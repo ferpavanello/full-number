@@ -11,6 +11,8 @@ function sanitizeNumber (rawNumber) {
         rawNumber = rawNumber.slice(1)
     }
 
+    rawNumber = formatRamNumber(rawNumber)
+
     if (NumbersEnum[rawNumber]) {
         return `${operator}${NumbersEnum[rawNumber]}`
     }
@@ -24,6 +26,29 @@ function sanitizeNumber (rawNumber) {
     const treatment = selectTreatment(numbersLength)
     const fullNumber = treatment(arrNumbers,  numbersLength)
     return `${operator}${fullNumber}`
+}
+
+/**
+ * Formats / cleans number to remove unnecessary characteres
+ * @param { String } rawNumber API number
+ * @returns { String } formated number
+ */
+function formatRamNumber (rawNumber) {
+    const noSpaceNumber = rawNumber.trim()
+    const noPlusOperator = noSpaceNumber.replace(/\+/, '')
+    const noUnecessaryZeros = removeUnnecessaryZeros(noPlusOperator)
+    const noDotsZeros = noUnecessaryZeros.replace(/\.0+/g, '')
+    return noDotsZeros
+}
+
+/**
+ * Removes unnecessary zeros from number
+ * @param { String } numberParam raw number
+ * @returns { String } no zeros number
+ */
+function removeUnnecessaryZeros (numberParam) {
+    const zeroMatchs = numberParam.match(/^0+(\d+)/, '') || []
+    return zeroMatchs[1] || numberParam
 }
 
 /**
