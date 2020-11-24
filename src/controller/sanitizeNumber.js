@@ -156,4 +156,14 @@ function tenHundredSpecificTreats (arrNumbers, tenRawEnum) {
     return formatedLabel.trim()
 }
 
-module.exports = sanitizeNumber
+module.exports = {
+    sanitizeNumber,
+    formatRawNumber,
+    removeUnnecessaryZeros,
+    selectTreatment,
+    mountThousandLabel,
+    getThousandLabel,
+    treatThousandLabel,
+    constructLabel,
+    tenHundredSpecificTreats
+}

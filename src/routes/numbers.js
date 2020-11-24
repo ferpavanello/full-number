@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const sanitizeNumber = require('../controller/sanitizeNumber')
+const { sanitizeNumber } = require('../controller/sanitizeNumber')
 
 router.get('/:rawNumber', (req, res) => {
     const rawNumber = req.params.rawNumber
